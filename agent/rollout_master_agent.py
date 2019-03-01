@@ -5,17 +5,17 @@
 #       Tingwu Wang
 # -----------------------------------------------------------------------------
 
-
 import multiprocessing
-import init_path
+import numpy as np
 import os
+
+from agent.rollout_agent import rollout_agent
+from graph_util import structure_mapper
+from six.moves import xrange
+from tool import init_path
 from util import logger
 from util import parallel_util
 from util import model_saver
-from six.moves import xrange
-from rollout_agent import rollout_agent
-import numpy as np
-from graph_util import structure_mapper
 
 
 class parallel_rollout_master_agent():
@@ -151,7 +151,7 @@ class parallel_rollout_master_agent():
     def load_running_means(self):
         # load the observation running mean
         if self.args.ckpt_name is not None:
-            base_path = os.path.join(init_path.get_base_dir(), 'checkpoint')
+            base_path = init_path.get_base_dir()
             logger.info('[LOAD_CKPT] loading observation normalizer info')
             self.running_mean_info = model_saver.load_numpy_model(
                 os.path.join(base_path,

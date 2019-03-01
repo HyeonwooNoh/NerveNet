@@ -5,7 +5,7 @@
 #       Tingwu Wang
 # -----------------------------------------------------------------------------
 
-import init_path
+from tool import init_path
 from util import logger
 import tensorflow as tf
 import os

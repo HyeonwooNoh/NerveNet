@@ -9,7 +9,7 @@
 
 
 import numpy as np
-import init_path
+from tool import init_path
 from util import logger
 from six.moves import xrange
 

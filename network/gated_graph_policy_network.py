@@ -5,10 +5,10 @@
 #       27th, Aug: MAJOR UPDATE: change the node input totally.
 #       NOTE: Now the input is in node order
 # ------------------------------------------------------------------------------
-import init_path
 import tensorflow as tf
 import numpy as np
-from policy_network import policy_network
+from network.policy_network import policy_network
+from tool import init_path
 from util import logger
 from graph_util import mujoco_parser
 from graph_util import gnn_util
@@ -109,7 +109,6 @@ class GGNN(policy_network):
 
             # read from the xml files
             self._parse_mujoco_template()
-
             # prepare the network's input and output
             self._prepare()
 
@@ -195,11 +194,11 @@ class GGNN(policy_network):
 
             # step 2: the receive and send index
             self._receive_idx = tf.placeholder(
-                tf.int32, shape=(None), name='receive_idx'
+                tf.int32, shape=[None], name='receive_idx'
             )
             self._send_idx = {
                 edge_type: tf.placeholder(
-                    tf.int32, shape=(None),
+                    tf.int32, shape=[None],
                     name='send_idx_{}'.format(edge_type))
                 for edge_type in self._node_info['edge_type_list']
             }
@@ -207,25 +206,25 @@ class GGNN(policy_network):
             # step 3: the node type index and inverse node type index
             self._node_type_idx = {
                 node_type: tf.placeholder(
-                    tf.int32, shape=(None),
+                    tf.int32, shape=[None],
                     name='node_type_idx_{}'.format(node_type))
                 for node_type in self._node_info['node_type_dict']
             }
             self._inverse_node_type_idx = tf.placeholder(
-                tf.int32, shape=(None), name='inverse_node_type_idx'
+                tf.int32, shape=[None], name='inverse_node_type_idx'
             )
 
             # step 4: the output node index
             self._output_type_idx = {
                 output_type: tf.placeholder(
-                    tf.int32, shape=(None),
+                    tf.int32, shape=[None],
                     name='output_type_idx_{}'.format(output_type)
                 )
                 for output_type in self._node_info['output_type_dict']
             }
 
             self._inverse_output_type_idx = tf.placeholder(
-                tf.int32, shape=(None), name='inverse_output_type_idx'
+                tf.int32, shape=[None], name='inverse_output_type_idx'
             )
 
             # step 5: batch_size
@@ -290,7 +289,7 @@ class GGNN(policy_network):
                 embedding_vec_size = int(embedding_vec_size)
                 self._embedding_variable = {}
                 out = self._npr.randn(
-                    embedding_vec_size, self._input_feat_dim / 2
+                    embedding_vec_size, int(self._input_feat_dim / 2)
                 ).astype(np.float32)
                 out *= 1.0 / np.sqrt(np.square(out).sum(axis=0, keepdims=True))
                 self._embedding_variable[False] = tf.Variable(
@@ -298,7 +297,7 @@ class GGNN(policy_network):
                 )
 
                 if np.any([node_size == 0 for _, node_size
-                           in self._node_info['ob_size_dict'].iteritems()]):
+                           in self._node_info['ob_size_dict'].items()]):
 
                     out = self._npr.randn(
                         embedding_vec_size, self._input_feat_dim

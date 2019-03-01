@@ -14,10 +14,10 @@
 # -----------------------------------------------------------------------------
 
 
-import init_path
 import os
 import numpy as np
 from bs4 import BeautifulSoup as bs
+from tool import init_path
 from util import logger
 from environments import register
 

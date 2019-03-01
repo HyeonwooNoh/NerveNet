@@ -7,10 +7,10 @@
 #       code originally from kvfran, modified by Tingwu Wang
 # -----------------------------------------------------------------------------
 import tensorflow as tf
-import init_path
 import multiprocessing
 from network import policy_network
 from network import gated_graph_policy_network
+from tool import init_path
 from util import logger
 from graph_util import graph_data_util
 from util import utils

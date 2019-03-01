@@ -7,11 +7,12 @@
 # -----------------------------------------------------------------------------
 
 import numpy as np
+import num2words
+import os
+
 from gym import utils
 from gym.envs.mujoco import mujoco_env
-import init_path
-import os
-import num2words
+from tool import init_path
 
 
 class CentipedeEnv(mujoco_env.MujocoEnv, utils.EzPickle):
@@ -56,6 +57,9 @@ class CentipedeEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         num_str = num2words.num2words(number)
         return num_str[0].upper() + num_str[1:]
 
+    def step(self, a):
+        return self._step(a)
+
     def _step(self, a):
         xposbefore = self.get_body_com("torso_" + str(self.num_body - 1))[0]
         self.do_simulation(a, self.frame_skip)
@@ -69,7 +73,7 @@ class CentipedeEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         forward_reward = (xposafter - xposbefore) / self.dt
         ctrl_cost = self._control_cost_coeff * np.square(a).sum()
         contact_cost = self._contact_cost_coeff * np.sum(
-            np.square(np.clip(self.model.data.cfrc_ext, -1, 1))
+            np.square(np.clip(self.sim.data.cfrc_ext, -1, 1))
         )
         survive_reward = 1.0
         reward = forward_reward - ctrl_cost - contact_cost + survive_reward
@@ -91,9 +95,9 @@ class CentipedeEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
         return np.concatenate([
-            self.model.data.qpos.flat[2:],
-            self.model.data.qvel.flat,
-            np.clip(self.model.data.cfrc_ext, -1, 1).flat,
+            self.sim.data.qpos.flat[2:],
+            self.sim.data.qvel.flat,
+            np.clip(self.sim.data.cfrc_ext, -1, 1).flat,
         ])
 
     def reset_model(self):

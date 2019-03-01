@@ -7,8 +7,9 @@
 
 from gym.envs.registration import register
 import num2words
-import asset_generator
 import numpy as np
+
+from environments import asset_generator
 
 MAX_EPISODE_STEPS_DICT = {
     'Centipede': 1000,
@@ -52,7 +53,7 @@ MULTI_TASK_DICT.update(ROBUSTNESS_TASK_DICT)
 name_list = []  # record all the environments available
 
 # register the transfer tasks
-for env_title, env in ROBUSTNESS_TASK_DICT.iteritems():
+for env_title, env in ROBUSTNESS_TASK_DICT.items():
 
     for i_env in env:
         file_name = 'environments.multitask_env.walkers:'

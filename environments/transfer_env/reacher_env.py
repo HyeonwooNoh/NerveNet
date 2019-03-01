@@ -7,11 +7,12 @@
 # -----------------------------------------------------------------------------
 
 import numpy as np
+import num2words
+import os
+
 from gym import utils
 from gym.envs.mujoco import mujoco_env
-import init_path
-import os
-import num2words
+from tool import init_path
 
 
 class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
@@ -44,8 +45,11 @@ class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         mujoco_env.MujocoEnv.__init__(self, xml_path, 2)
         utils.EzPickle.__init__(self)
 
+    def step(self, a):
+        return self._step(a)
+
     def _step(self, a):
-        vec = self.model.data.site_xpos[0] - self.get_body_com("target")
+        vec = self.sim.data.site_xpos[0] - self.get_body_com("target")
         '''
         max is: 0.4
         reward_ctrl = - np.square(a).sum()
@@ -102,11 +106,11 @@ class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
 
     def _get_obs(self):
         return np.concatenate([
-            self.model.data.qpos.flat[:-2],
-            self.model.data.qvel.flat[:-2],
-            (self.model.data.site_xpos[0] - self.get_body_com("target"))[:2],
+            self.sim.data.qpos.flat[:-2],
+            self.sim.data.qvel.flat[:-2],
+            (self.sim.data.site_xpos[0] - self.get_body_com("target"))[:2],
             [self._task_indicator],  # indicating task, -1: reacher, 1: avoider
-            self.model.data.qpos.flat[-2:]  # target pos
+            self.sim.data.qpos.flat[-2:]  # target pos
             # self.model.data.qvel.flat[-2:]  # target vel
         ])
 
@@ -125,8 +129,7 @@ class ReacherEnv(mujoco_env.MujocoEnv, utils.EzPickle):
         else:
             temp[reacher_id, 0] = 0.001
             temp[avoider_id, 0] = 0.015
-
-        self.model.geom_size = temp
+        self.model.geom_size[:] = temp
 
 
 class AvoiderEnv(ReacherEnv):

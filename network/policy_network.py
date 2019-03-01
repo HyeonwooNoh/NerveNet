@@ -3,9 +3,9 @@
 #       Tingwu Wang
 #   TODO: 1. modify the mlp layer setting (list)
 # -----------------------------------------------------------------------------
-import init_path
 import tensorflow as tf
 import numpy as np
+from tool import init_path
 from util.utils import fully_connected
 from util import model_saver
 

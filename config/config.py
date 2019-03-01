@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------------------
 
 import argparse
-import init_path
+from tool import init_path
 
 
 def get_config():
