@@ -48,7 +48,7 @@ python3 -m tool.main --task CentipedeEight-v1 --use_gnn_as_policy 1 --num_thread
 ```
 The reward of **NerveNet** should be around *1600*. And to test the pretrained model:
 ```bash
-python main.py --task CentipedeSix-v1 --use_gnn_as_policy 1 --num_threads 4 --gnn_embedding_option noninput_shared --root_connection_option nN,Rn,uE --gnn_node_option nG,nB --ckpt_name ../checkpoint/centipede/gnn/6 --test 100
+python3 -m tool.main --task CentipedeSix-v1 --use_gnn_as_policy 1 --num_threads 4 --gnn_embedding_option noninput_shared --root_connection_option nN,Rn,uE --gnn_node_option nG,nB --ckpt_name checkpoint/centipede/gnn/6 --test 100
 ```
 The reward for **NerveNet** pretrained model is around: *2477*
 
