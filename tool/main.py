@@ -7,6 +7,7 @@ from tool import init_path
 from agent import optimization_agent
 from agent import rollout_master_agent
 from config.config import get_config
+from util import csv_util
 from util import parallel_util
 from util import logger
 import multiprocessing
@@ -52,6 +53,9 @@ if __name__ == '__main__':
     starting_weights = learner_results.get()
     rollout_agent.set_policy_weights(starting_weights)
 
+    # logging for plot
+    csv_writer = csv_util.CSVWriter(args, interval=1)
+
     # some training stats
     start_time = time.time()
     totalsteps = 0
@@ -69,6 +73,12 @@ if __name__ == '__main__':
         results = learner_results.get()
         totalsteps = results['totalsteps']
         learn_time = (time.time() - learn_start) / 60.0
+
+        stats = results['stats']
+        stats['totalsteps'] = totalsteps
+        stats['learn_time'] = learn_time
+        stats['iteration'] = results['iteration']
+        csv_writer.add(stats, step=stats['iteration'])
 
         # update the policy
         rollout_agent.set_policy_weights(results['policy_weights'])
@@ -90,15 +100,18 @@ if __name__ == '__main__':
     rollout_agent.end()
     learner_tasks.put(parallel_util.END_SIGNAL)  # kill the learner
     if args.test:
+        stats = results['stats']
         logger.info(
             'Test performance ({} rollouts): {}'.format(
-                args.test, results['avg_reward']
+                args.test, stats['avg_reward']
             )
         )
 
         logger.info(
             'max: {}, min: {}, median: {}'.format(
-                results['max_reward'], results['min_reward'],
-                results['median_reward']
+                stats['max_reward'], stats['min_reward'],
+                stats['median_reward']
             )
         )
+
+    csv_writer.close()

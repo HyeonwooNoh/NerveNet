@@ -20,7 +20,8 @@ def get_config():
                         help='the mujoco environment to test')
     parser.add_argument("--gamma", type=float, default=.99,
                         help='the discount factor for value function')
-    parser.add_argument("--output_dir", '-o', type=str, default=None)
+    parser.add_argument("--output_dir", '-o', type=str,
+                        default='experiments')
     parser.add_argument("--seed", type=int, default=1234)
 
     # training configuration

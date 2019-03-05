@@ -125,7 +125,11 @@ class optimization_agent(base_agent):
                     )
                     self.task_q.task_done()
                     stats = {
-                        "avg_reward": episoderewards.mean()
+                        "avg_reward": episoderewards.mean(),
+                        "std_reward": episoderewards.std(),
+                        "max_reward": np.amax(episoderewards),
+                        "min_reward": np.amin(episoderewards),
+                        "median_reward": np.median(episoderewards),
                     }
                     logger.info(stats)
                     return_data = {
@@ -133,12 +137,6 @@ class optimization_agent(base_agent):
                         'stats': stats,
                         'totalsteps': self.args.max_timesteps + 100,
                         'iteration': self.get_iteration_count(),
-
-                        'std_reward': episoderewards.std(),
-                        "avg_reward": episoderewards.mean(),
-                        "max_reward": np.amax(episoderewards),
-                        "min_reward": np.amin(episoderewards),
-                        "median_reward": np.median(episoderewards),
                     }
                     self.result_q.put(return_data)
 
