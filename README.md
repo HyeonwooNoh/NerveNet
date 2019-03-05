@@ -1,12 +1,19 @@
 # Introduction
 It is the github repo for the paper: [NerveNet: Learning Structured Policy with Graph Neural Networks](http://www.cs.toronto.edu/~tingwuwang/nervenet.html).
 # Dependency
+The repo is tested with Python 3.5
 
 ## 1. tensorflow >= 1.0.1
 ```bash
 pip install tensorflow-gpu
 ```
 GPU version is not mandatory, since in the current repo, gpu is not used by default.
+
+Currently this repo is tested with tensorflow 1.12.0
+```bash
+pip install --upgrade https://storage.googleapis.com/tensorflow/linux/gpu/tensorflow_gpu-1.12.0-cp35-cp35m-linux_x86_64.whl
+```
+
 ## 2. gym >= 0.7.4
 ### gym dependency
 ```bash
