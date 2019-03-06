@@ -1,6 +1,8 @@
 import csv
+import numpy as np
 import os
 
+from collections import defaultdict
 from tool import init_path
 
 
@@ -49,3 +51,20 @@ class CSVWriter():
         log_name = os.path.join(
             base_path, self.args.task + '_' + self.args.time_id + '.csv')
         return log_name
+
+
+def load_csv_file(filename):
+    csvfile = open(filename, 'r', newline='')
+    reader = csv.DictReader(csvfile)
+    csv_dict = defaultdict(list)
+    for row in reader:
+        for fieldname, value in row.items():
+            csv_dict[fieldname].append(value)
+
+    np_dict = {}
+    for fieldname, values in csv_dict.items():
+        np_dict[fieldname] = np.array(values).astype('float32')
+
+    csvfile.close()
+    np_dict['filename'] = filename
+    return np_dict
